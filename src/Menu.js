@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Menu = props => (
-	<div role="button" {...props} style={{ marginRight: 'auto' }}>
+	<div role="button" {...props} style={{ marginRight: '1rem' }}>
 		<svg viewBox="0 0 18 15" width="20">
 			<path
 				fill="#fff"

@@ -1,9 +1,25 @@
 import React, { useState } from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import {
+	BrowserRouter as Router,
+	Route,
+	Switch,
+	Link,
+	useLocation,
+} from 'react-router-dom';
+import {
+	motion,
+	useMotionValue,
+	useTransform,
+	AnimatePresence,
+} from 'framer-motion';
 import { Card, CardGrid, Container, Header } from './Elements';
 import Modal from './Modal';
 import Accordian from './Accordian';
 import Nav from './Nav';
+import Squares from './Squares';
+import Slideshow from './Slideshow';
+import Home from './Home';
+import About from './About';
 import './App.css';
 import Menu from './Menu';
 import blue from './blue.png';
@@ -15,9 +31,10 @@ function App() {
 	const [value, setValue] = useState(0);
 	const [isToggled, setToggled] = useState(false);
 	const [isNavOpen, setIsNavOpen] = useState(false);
+	const [isCardActive, setIsCardActive] = useState(true);
+	const location = useLocation();
 	const x = useMotionValue(0);
 	const opacity = useTransform(x, [-200, 0, 200], [0, 1, 0]);
-	console.log(x);
 
 	return (
 		<motion.div
@@ -28,15 +45,23 @@ function App() {
 			<Header>
 				<Menu onClick={() => setIsNavOpen(true)} />
 				<Nav isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
-				<h1>Animating React with Framer Motion</h1>
+				<Link to="/" style={{ marginRight: '1rem' }}>
+					Home
+				</Link>
+				<Link to="/about">About</Link>
+				<h1 style={{ marginLeft: 'auto' }}>
+					Animating React with Framer Motion
+				</h1>
 			</Header>
 			<Container>
+				{/* <Slideshow />
+				<Squares /> */}
 				{/* the slider returns a string useDebugValue(
           because of this we cannot simply set the animation x value = value
           we have to either parseInt() the value or append a "px" to the end of the value
           we can also add or mutliply the value inside the animation by saing value * n
         ) */}
-				<h2>Super Cool</h2>
+				{/* <h2>Super Cool</h2>
 				<input
 					type="range"
 					min="-100"
@@ -49,9 +74,8 @@ function App() {
 				{/* when we click the button we want the "Super Cool" header to toggle
         we will then pass this value into a state function 
         */}
-				<button onClick={prevValue => setToggled(true)}>Modal</button>
-
-				<Modal isToggled={isToggled} setToggled={setToggled}>
+				{/* <button onClick={prevValue => setToggled(true)}>Modal</button> */}
+				{/* <Modal isToggled={isToggled} setToggled={setToggled}>
 					<Card style={{ background: 'var(--purp)' }}>
 						<h3>Some card</h3>
 						<img src={purp} />
@@ -72,18 +96,36 @@ function App() {
 						<h3>Some card</h3>
 						<img src={purp} />
 					</Card>
-					<Card
-						drag="x"
-						dragConstraints={{ left: 0, right: 0 }}
-						style={{
-							x,
-							opacity,
-							background: 'var(--blue)',
-						}}
-					>
-						<h3>Some card</h3>
-						<img src={blue} />
-					</Card>
+					<AnimatePresence>
+						{isCardActive && (
+							<motion.div
+								exit={{ height: 0, overflow: 'hidden', opacity: 0 }}
+								transition={{
+									opacity: {
+										duration: 0,
+									},
+								}}
+							>
+								<Card
+									onDragEnd={(event, info) => {
+										if (info.point.x >= 200 || info.point.x <= -200) {
+											setIsCardActive(false);
+										}
+									}}
+									drag="x"
+									dragConstraints={{ left: 0, right: 0 }}
+									style={{
+										x,
+										opacity,
+										background: 'var(--blue)',
+									}}
+								>
+									<h3>Some card</h3>
+									<img src={blue} />
+								</Card>
+							</motion.div>
+						)}
+					</AnimatePresence>
 					<Card style={{ background: 'var(--black)' }}>
 						<h3>Some card</h3>
 						<img src={black} />
@@ -92,10 +134,30 @@ function App() {
 						<h3>Some card</h3>
 						<img src={green} />
 					</Card>
-				</CardGrid>
+				</CardGrid> */}
+
+				{/* routing things */}
+				<AnimatePresence exitBeforeEnter>
+					<Switch location={location} key={location.pathname}>
+						<Route exact path="/">
+							<Home />
+						</Route>
+						<Route exact path="/about">
+							<About />
+						</Route>
+					</Switch>
+				</AnimatePresence>
 			</Container>
 		</motion.div>
 	);
 }
 
-export default App;
+const AppWrapper = () => {
+	return (
+		<Router>
+			<App></App>
+		</Router>
+	);
+};
+
+export default AppWrapper;
