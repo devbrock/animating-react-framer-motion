@@ -8,9 +8,6 @@ const variants = {
 	exit: {
 		opacity: 0,
 		y: 100,
-		transition: {
-			delay: 0.5,
-		},
 	},
 };
 
